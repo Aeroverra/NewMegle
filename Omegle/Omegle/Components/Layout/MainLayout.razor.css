@@ -19,7 +19,15 @@ main {
     height: 3.5rem;
     display: flex;
     align-items: center;
+    justify-content: space-between; /* This will put space between the company name and the about link */
 }
+
+
+.company-name {
+    /* If you need specific styling for the company name, add it here */
+    font-weight: bold; /* Example: making the company name bold */
+}
+
 
     .top-row ::deep a, .top-row ::deep .btn-link {
         white-space: nowrap;
