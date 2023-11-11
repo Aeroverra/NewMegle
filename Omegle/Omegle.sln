@@ -1,0 +1,50 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.0.0
+MinimumVisualStudioVersion = 16.0.0.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omegle", "Omegle\Omegle.csproj", "{58890DB6-801D-458A-A0FD-064CFD035B97}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omegle.Client", "Omegle.Client\Omegle.Client.csproj", "{BF7634B4-9BCA-4D29-8337-3121B491FBEA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BF7634B4-9BCA-4D29-8337-3121B491FBEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF7634B4-9BCA-4D29-8337-3121B491FBEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF7634B4-9BCA-4D29-8337-3121B491FBEA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BF7634B4-9BCA-4D29-8337-3121B491FBEA}.Debug|x64.Build.0 = Debug|Any CPU
+		{BF7634B4-9BCA-4D29-8337-3121B491FBEA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BF7634B4-9BCA-4D29-8337-3121B491FBEA}.Debug|x86.Build.0 = Debug|Any CPU
+		{BF7634B4-9BCA-4D29-8337-3121B491FBEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF7634B4-9BCA-4D29-8337-3121B491FBEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF7634B4-9BCA-4D29-8337-3121B491FBEA}.Release|x64.ActiveCfg = Release|Any CPU
+		{BF7634B4-9BCA-4D29-8337-3121B491FBEA}.Release|x64.Build.0 = Release|Any CPU
+		{BF7634B4-9BCA-4D29-8337-3121B491FBEA}.Release|x86.ActiveCfg = Release|Any CPU
+		{BF7634B4-9BCA-4D29-8337-3121B491FBEA}.Release|x86.Build.0 = Release|Any CPU
+		{58890DB6-801D-458A-A0FD-064CFD035B97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58890DB6-801D-458A-A0FD-064CFD035B97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58890DB6-801D-458A-A0FD-064CFD035B97}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{58890DB6-801D-458A-A0FD-064CFD035B97}.Debug|x64.Build.0 = Debug|Any CPU
+		{58890DB6-801D-458A-A0FD-064CFD035B97}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{58890DB6-801D-458A-A0FD-064CFD035B97}.Debug|x86.Build.0 = Debug|Any CPU
+		{58890DB6-801D-458A-A0FD-064CFD035B97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58890DB6-801D-458A-A0FD-064CFD035B97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58890DB6-801D-458A-A0FD-064CFD035B97}.Release|x64.ActiveCfg = Release|Any CPU
+		{58890DB6-801D-458A-A0FD-064CFD035B97}.Release|x64.Build.0 = Release|Any CPU
+		{58890DB6-801D-458A-A0FD-064CFD035B97}.Release|x86.ActiveCfg = Release|Any CPU
+		{58890DB6-801D-458A-A0FD-064CFD035B97}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D51B37D7-BECE-4F5D-8532-92C3910378FB}
+	EndGlobalSection
+EndGlobal
