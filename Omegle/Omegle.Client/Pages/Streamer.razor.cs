@@ -21,29 +21,23 @@ namespace Omegle.Client.Pages
             {
                 _streamerClass = DotNetObjectReference.Create(this);
                 _localScript = await JavaScript.InvokeAsync<IJSObjectReference>("import", $"/Pages/{nameof(Streamer)}.razor.js");
+                await _localScript.InvokeVoidAsync("setup", _streamerClass);
                 VideoHubClient = new VideoHubClient(NavigationManager);
+                VideoHubClient.OnInitConnection += VideoHubClient_OnInitConnection;
                 VideoHubClient.OnReceiveOffer += VideoHubClient_OnReceiveOffer;
                 VideoHubClient.OnReceiveAnswer += VideoHubClient_OnReceiveAnswer;
                 VideoHubClient.OnReceiveIce += VideoHubClient_OnReceiveIce;
                 await VideoHubClient.CheckSetupHubAsync();
-                var offer = await _localScript.InvokeAsync<string>("createStream");
-                await VideoHubClient.MakeOffer(offer);
+                await VideoHubClient.JoinLobby();
             }
         }
 
-        private async Task VideoHubClient_OnReceiveIce(string connectionId, string ice, bool destinationlocal)
+        private async Task VideoHubClient_OnInitConnection(string connectionId)
         {
             if (_localScript is not null)
             {
-                await _localScript.InvokeVoidAsync("acceptIce", _streamerClass, connectionId, ice, destinationlocal);
-            }
-        }
-
-        private async Task VideoHubClient_OnReceiveAnswer(string connectionId, string answer)
-        {
-            if (_localScript is not null)
-            {
-                await _localScript.InvokeVoidAsync("acceptAnswer", _streamerClass, connectionId, answer);
+                var offer = await _localScript.InvokeAsync<string>("createOffer", connectionId);
+                await VideoHubClient!.SendOffer(connectionId, offer);
             }
         }
 
@@ -51,21 +45,42 @@ namespace Omegle.Client.Pages
         {
             if (_localScript is not null)
             {
-                var answer = await _localScript.InvokeAsync<string>("acceptOffer", _streamerClass, connectionId, offer);
+                var answer = await _localScript.InvokeAsync<string>("acceptOffer", connectionId, offer);
                 await VideoHubClient!.SendAnswer(connectionId, answer);
             }
         }
 
-        [JSInvokable]
-        public async Task SendIce(string connectionId, string ice, bool destinationlocal)
+        private async Task VideoHubClient_OnReceiveAnswer(string connectionId, string answer)
         {
-            await VideoHubClient!.SendIce(connectionId, ice, destinationlocal);
+            if (_localScript is not null)
+            {
+                await _localScript.InvokeVoidAsync("acceptAnswer", connectionId, answer);
+            }
+        }
+
+        private async Task VideoHubClient_OnReceiveIce(string connectionId, string ice)
+        {
+            if (_localScript is not null)
+            {
+                await _localScript.InvokeVoidAsync("acceptIce", connectionId, ice);
+            }
+        }
+
+
+
+
+
+        [JSInvokable]
+        public async Task SendIce(string connectionId, string ice)
+        {
+            await VideoHubClient!.SendIce(connectionId, ice);
         }
 
         public async ValueTask DisposeAsync()
         {
             if (VideoHubClient is not null)
             {
+                VideoHubClient.OnInitConnection -= VideoHubClient_OnInitConnection;
                 VideoHubClient.OnReceiveOffer -= VideoHubClient_OnReceiveOffer;
                 VideoHubClient.OnReceiveAnswer -= VideoHubClient_OnReceiveAnswer;
                 VideoHubClient.OnReceiveIce -= VideoHubClient_OnReceiveIce;

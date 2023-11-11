@@ -7,34 +7,37 @@ namespace Omegle.Hubs
     {
         public const string HubUrl = "/Hubs/VideoHub";
 
-        public static List<(string ConnectionId, string Offer)> Offers = new();
+        public static List<string> Lobby = new();
 
 
-
-        public Task MakeOffer(string offer)
+        public async Task JoinLobby()
         {
-            if (Offers.Any())
+            var otherConnectionId = Lobby.FirstOrDefault();
+            if(otherConnectionId is not null)
             {
-                var otherOffer = Offers.First();
-                Offers.Remove(otherOffer);
-                Clients.Client(Context.ConnectionId).SendAsync("ReceiveOffer", otherOffer.ConnectionId, otherOffer.Offer);
-                Clients.Client(otherOffer.ConnectionId).SendAsync("ReceiveOffer", Context.ConnectionId, offer);
+                Lobby.Remove(otherConnectionId);
+                await Clients.Client(Context.ConnectionId).SendAsync("InitConnection", otherConnectionId);
             }
             else
             {
-                Offers.Add((Context.ConnectionId, offer));
+                Lobby.Add(Context.ConnectionId);
             }
-            return Task.CompletedTask;
+
         }
 
+
+        public async Task SendOffer(string connectionId, string offer)
+        {
+            await Clients.Client(connectionId).SendAsync("ReceiveOffer", Context.ConnectionId, offer);
+        }
         public async Task SendAnswer(string connectionId, string answer)
         {
             await Clients.Client(connectionId).SendAsync("ReceiveAnswer", Context.ConnectionId, answer);
         }
 
-        public async Task SendIce(string connectionId, string ice, bool destinationlocal)
+        public async Task SendIce(string connectionId, string ice)
         {
-            await Clients.Client(connectionId).SendAsync("ReceiveIce", Context.ConnectionId, ice, destinationlocal);
+            await Clients.Client(connectionId).SendAsync("ReceiveIce", Context.ConnectionId, ice);
         }
 
 
@@ -46,7 +49,7 @@ namespace Omegle.Hubs
 
         public override Task OnDisconnectedAsync(Exception? exception)
         {
-            Offers.RemoveAll(x => x.ConnectionId == Context.ConnectionId);
+            Lobby.RemoveAll(x => x == Context.ConnectionId);
             return base.OnDisconnectedAsync(exception);
 
         }

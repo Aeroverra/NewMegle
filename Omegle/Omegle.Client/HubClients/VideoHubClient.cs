@@ -8,8 +8,9 @@ namespace Omegle.Client.HubClients
         private HubConnection? _hubConnection;
         private readonly NavigationManager _navigationManager;
         public event Func<string, string, Task>? OnReceiveOffer;
-        public event Func<string,string, Task>? OnReceiveAnswer;
-        public event Func<string, string, bool, Task>? OnReceiveIce;
+        public event Func<string, string, Task>? OnReceiveAnswer;
+        public event Func<string, string, Task>? OnReceiveIce;
+        public event Func<string, Task>? OnInitConnection;
 
         private SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
@@ -35,6 +36,14 @@ namespace Omegle.Client.HubClients
                     _hubConnection = new HubConnectionBuilder()
                         .WithUrl(_navigationManager.ToAbsoluteUri("/Hubs/VideoHub"))
                         .Build();
+                     
+                    _hubConnection.On("InitConnection", (string connectionId) =>
+                    {
+                        if (OnInitConnection is not null)
+                        {
+                            _ = OnInitConnection.Invoke(connectionId);
+                        }
+                    });
 
                     _hubConnection.On("ReceiveOffer", (string connectionId, string offer) =>
                     {
@@ -44,7 +53,7 @@ namespace Omegle.Client.HubClients
                         }
                     });
 
-                    _hubConnection.On("ReceiveAnswer", (string connectionId,string answer) =>
+                    _hubConnection.On("ReceiveAnswer", (string connectionId, string answer) =>
                     {
                         if (OnReceiveAnswer is not null)
                         {
@@ -52,11 +61,11 @@ namespace Omegle.Client.HubClients
                         }
                     });
 
-                    _hubConnection.On("ReceiveIce", (string connectionId, string ice, bool destinationlocal) =>
+                    _hubConnection.On("ReceiveIce", (string connectionId, string ice) =>
                     {
                         if (OnReceiveIce is not null)
                         {
-                            _ = OnReceiveIce.Invoke(connectionId, ice, destinationlocal);
+                            _ = OnReceiveIce.Invoke(connectionId, ice);
                         }
                     });
 
@@ -69,11 +78,19 @@ namespace Omegle.Client.HubClients
             finally { _semaphore.Release(); }
         }
 
-        public async Task MakeOffer(string offer)
+        public async Task JoinLobby()
         {
             if (_hubConnection is not null)
             {
-                await _hubConnection.SendAsync("MakeOffer", offer);
+                await _hubConnection.SendAsync("JoinLobby");
+            }
+        }
+
+        public async Task SendOffer(string connectionId, string offer)
+        {
+            if (_hubConnection is not null)
+            {
+                await _hubConnection.SendAsync("SendOffer", connectionId, offer);
             }
         }
 
@@ -83,13 +100,13 @@ namespace Omegle.Client.HubClients
             {
                 await _hubConnection.SendAsync("SendAnswer", connectionId, answer);
             }
-        }
+        } 
 
-        public async Task SendIce(string connectionId, string ice, bool destinationlocal)
+        public async Task SendIce(string connectionId, string ice)
         {
             if (_hubConnection is not null)
             {
-                await _hubConnection.SendAsync("SendIce", connectionId, ice, destinationlocal);
+                await _hubConnection.SendAsync("SendIce", connectionId, ice);
             }
         }
 
